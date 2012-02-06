@@ -31,7 +31,8 @@ app.configure('production', function(){
 
 app.get('/', routes.index);
 app.get('/search', routes.table);
-app.get('/ajax/test.json', routes.tableData);
+app.get('/ajax/table.json', routes.tableData);
+app.post('/ajax/post.json', routes.postData);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

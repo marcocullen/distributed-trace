@@ -24,3 +24,14 @@ exports.tableData = function(req, res) {
 
 	res.send(data);
 }
+
+exports.postData = function(req, res) {
+	var locations = req.param('locations', null);
+
+	console.log('post data called');
+	var data = { "aaData": [			
+			["UK Datahub",locations[0],"log2.txt","Some more matched text"]
+		]
+	}
+	res.send(data);
+}

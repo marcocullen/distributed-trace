@@ -14,22 +14,39 @@
 		<script type="text/javascript" language="javascript" src="javascripts/jquery.dataTables.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			var loadUrl = "/ajax/test.json";
-			
+			var searchObject = {"locations": []};			
 			$.ajaxSetup ({  
     			cache: false  
-			});
+			})
 			$(document).ready(function() {
-				$('#example').hide();				
-				$('#ajax-request-button').click(function() {				
-				$('#example').show();
-					var oTable = $('#example').dataTable();
-  					oTable.fnDestroy();				
-					$('#example').dataTable( {
-					"bProcessing": true,
-					"sAjaxSource": 'ajax/test.json'
-				} );					
+				$('#search_results').hide();
+				$('input[name=all]').click(function() {
+						if($('input[name=all]').is(':checked')) {
+							$('.location').attr('checked', true);
+						}
+						else {
+							$('.location').attr('checked', false);
+						}							
+				});
 				
-					$.getJSON('ajax/test.json', function(data) {
+				$('#ajax-request-button').click(function() {
+								
+					searchObject["locations"] = [];
+					$('.location').each(function() {
+						if($(this).is(':checked')) {
+							searchObject["locations"].push($(this).attr('name'));
+						}													
+					});
+					
+					$.post("ajax/post.json", searchObject, function(data) {
+						$('#search_results').show();
+   						var oTable = $('#example').dataTable();
+	  					oTable.fnDestroy();				
+						$('#example').dataTable(data);
+												
+					});
+															
+					$.getJSON('ajax/table.json', function(data) {
 					  var items = [];
 					 	
 					  $.each(data, function(key, val) {
@@ -50,6 +67,11 @@
 			<div class="full_width big">
 				HomeBrew Traceroute
 			</div>
+			<h1>Locations</h1>
+				<b><input type="checkbox" id="all" name="all" value="All">All<br></b>
+				<input class="location" type="checkbox" name="London" value="Milk">London<br>
+				<input class="location" type="checkbox" name="US" value="Butter">New York<br>
+				<input class="location" type="checkbox" name="HK" value="Butter">Hong Kong<br>			
 			<h1>Query</h1>
 			<p align="center"> Expression <input id="expression" type="text" /><button id="ajax-request-button" type="button">Search</button></p>
 			<div id="search_results">
